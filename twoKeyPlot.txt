@@ -1,0 +1,36 @@
+# plot scattering graph for support, confidence and lift
+#
+set term png
+set output "twoKeyPlot.png"
+#
+set datafile separator ","
+
+stats "twoKeyPlot.dat" using 1:2 prefix "A"
+
+#set size ratio -1 1,1
+set title sprintf("Scatter plot for %d rules", A_records)
+set xlabel "support"
+set ylabel "confidence"
+set key outside
+#set cblabel "order"
+#set zrange [1:6]
+#set grid
+#set style fs transparent solid 0.8 noborder
+set style circle radius 0.0002
+
+#set view map
+#set pm3d explicit
+set palette defined (-1 "gray", 2 "yellow", 4 "orange", 6 "red")
+
+plot 	"< awk -F ',' '{if($6 == \"1\") print}' twoKeyPlot.dat" u 1:2 t "order 2" w circles lc rgb "blue" fs transparent solid 1 noborder, \
+	"< awk -F ',' '{if($6 == \"2\") print}' twoKeyPlot.dat" u 1:2 t "order 3" w circles lc rgb "khaki" fs transparent solid 0.8 noborder, \
+	"< awk -F ',' '{if($6 == \"3\") print}' twoKeyPlot.dat" u 1:2 t "order 4" w circles lc rgb "yellow" fs transparent solid 0.6 noborder, \
+	"< awk -F ',' '{if($6 == \"4\") print}' twoKeyPlot.dat" u 1:2 t "order 5" w circles lc rgb "orangered" fs transparent solid 0.4 noborder, \
+	"< awk -F ',' '{if($6 == \"5\") print}' twoKeyPlot.dat" u 1:2 t "order 6" w circles lc rgb "red" fs transparent solid 0.2 noborder, \
+	sprintf("< awk -F ',' '{if($1 > \"%.7f\" && $2 > \"%.7f\") print}' twoKeyPlot.dat", A_max_x * 0.9, A_median_y * 0) u 1:2:7 notitle w labels offset -1,1 point tc rgb "black"
+#	sprintf("< sed -n '%d'p twoKeyPlot.dat", A_index_max_x + 8) u 1:2:7 t "max" w labels offset 0,1 point tc rgb "black"
+
+#plot "twoKeyPlot.dat" u 1:2 w points
+
+quit
+

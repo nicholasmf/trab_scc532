@@ -1,0 +1,24 @@
+# plot scattering graph for support, confidence and lift
+#
+set term png
+set output "freq.png"
+#
+set datafile separator ","
+
+stats "freq.dat" using 1 prefix "A"
+
+set title sprintf("Frequency plot for %d items", A_records);
+set xlabel "support"
+set xrange [0:2000]
+set ylabel "Cumulative support"
+set yrange [0: 1.1]
+set grid
+set style fill transparent solid 0.35 noborder
+set style circle radius 0.05
+
+plot "freq.dat" u ($1/A_sum) smooth cumulative t "support cumulative"
+#plot "supXconf.data" using 1:2 with points pt 7 lc rgb "blue"
+#plot 'supXconf.data' using (count = count + 1, $1):2 with circles lc rgb "blue", \
+	'' u 1:2 every 200 w circles lc rgb "blue" fs solid 1.0 border
+
+quit
